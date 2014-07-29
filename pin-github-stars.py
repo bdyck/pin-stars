@@ -150,7 +150,7 @@ def main():
                             help='GitHub username (sent as user-agent for API requests)')
     args = arg_parser.parse_args()
 
-    gh_api_token = args.github_token or load_token('~/.github_oauth_token')
+    gh_api_token = args.github_token or load_token('~/.github_api_token')
     pb_api_token = args.pinboard_token or load_token('~/.pinboard_api_token')
 
     if gh_api_token is None:
