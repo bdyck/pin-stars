@@ -48,7 +48,7 @@ SLEEP_TIME = 3
 MAX_RETRIES = 10
 
 
-def add_bookmark(gh_data, pb_api_token):
+def add_bookmark(gh_data, pb_api_token, lang_tag_prefix):
     """
     Adds a bookmark to Pinboard.
 
@@ -57,14 +57,14 @@ def add_bookmark(gh_data, pb_api_token):
     full_name   -> description
     html_url    -> url
     description -> extended
-    language    -> tags
+    language    -> tags + lang_tag_prefix
     """
     description = gh_data['description']
     if gh_data['homepage']:
         description += '\n\nProject homepage: {}'.format(gh_data['homepage'])
     tags = 'github-star'
     if gh_data['language']:
-        tags = ' '.join((tags, gh_data['language'].lower()))
+        tags = ' '.join((tags, lang_tag_prefix + gh_data['language'].lower()))
     params = {'description': gh_data['full_name'],
               'url': gh_data['html_url'],
               'extended': description,
@@ -148,6 +148,9 @@ def main():
                             '--github-user',
                             required=True,
                             help='GitHub username (sent as user-agent for API requests)')
+    arg_parser.add_argument('--lang-tag-prefix',
+                            default='',
+                            help='Set a prefix for the language tag. (Such as "lang:")')
     args = arg_parser.parse_args()
 
     gh_api_token = args.github_token or load_token('~/.github_api_token')
@@ -187,13 +190,13 @@ def main():
             result, hit_most_recent = filter_stars(result, most_recent)
         for star in result:
             print '[INFO] Pinboard: Adding {} ...'.format(star['full_name'])
-            r, s = add_bookmark(star, pb_api_token)
+            r, s = add_bookmark(star, pb_api_token, args.lang_tag_prefix)
             retry = 1
             while s == 429 and retry <= MAX_RETRIES:
                 print '[WARN] Pinboard: Rate-limited! Retrying ...'
                 # Back off & retry
                 sleep(SLEEP_TIME * retry)
-                r, s = add_bookmark(star, pb_api_token)
+                r, s = add_bookmark(star, pb_api_token, args.lang_tag_prefix)
                 if r['result_code'].lower() != 'done':
                     exit_with_error('Pinboard: {}.'.format(r['result_code']))
                 retry += 1
