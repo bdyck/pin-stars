@@ -1,6 +1,6 @@
 # README
 
-This script adds starred GitHub repositories as bookmarks in Pinboard. All such bookmarks will be tagged with `github-star` and the project's language (if applicable). The script will attempt to avoid overwriting bookmarks in Pinboard by checking starred repos against the most recent bookmark with the `github-star` tag. If the GitHub repository has a listed language the language will be added as another tag in addition `github-star`, you may set a prefix to the language tag with the `--lang-tag-prefix`.
+This script adds starred GitHub repositories as bookmarks in Pinboard. All such bookmarks will be tagged with github-star and the project's language (if applicable). In addition, you may set a prefix for the language tag with the `--lang-tag-prefix` option. The script will attempt to avoid overwriting bookmarks in Pinboard by checking starred repos against the most recent bookmark with the `github-star` tag.
 
 The script requires a [GitHub personal API token](https://github.com/blog/1509-personal-api-tokens) (see note below) and a [Pinboard API token](https://pinboard.in/settings/password), both of which may be stored in files named `~/.github_api_token` and `~/.pinboard_api_token` respectively instead of passing them as command-line options. Dependencies are best installed with `pip` and `virtualenv`, though you're free to live on the edge and do things like `sudo easy_install requests` if you wish. Just don't say you weren't warned... :smirk:
 
